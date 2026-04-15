@@ -62,12 +62,7 @@ function App() {
   return (
     <main className="page-shell">
       <section className="hero-panel">
-        <p className="eyebrow">La Cartelera de Hype Tecnologico</p>
-        <h1>Tu radar de videos sin basura de payload</h1>
-        <p className="hero-copy">
-          El backend filtra la respuesta cruda y calcula un indice de hype para
-          encontrar la pieza mas caliente del feed.
-        </p>
+        <h1>La Cartelera de Hype Tecnologico</h1>
       </section>
 
       {loading ? <section className="status-card">Cargando videos...</section> : null}
