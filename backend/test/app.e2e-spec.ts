@@ -16,11 +16,23 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/api/videos (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/api/videos')
       .expect(200)
-      .expect('Hello World!');
+      .expect((response) => {
+        expect(Array.isArray(response.body)).toBe(true);
+        expect(response.body[0]).toEqual(
+          expect.objectContaining({
+            id: expect.any(String),
+            thumbnail: expect.any(String),
+            title: expect.any(String),
+            author: expect.any(String),
+            publishedRelative: expect.any(String),
+            hypeLevel: expect.any(Number),
+          }),
+        );
+      });
   });
 
   afterEach(async () => {
