@@ -45,6 +45,16 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/api (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/api')
+      .expect(200)
+      .expect({
+        message: 'API activa',
+        endpoints: ['/api/videos'],
+      });
+  });
+
   afterEach(async () => {
     await app.close();
   });

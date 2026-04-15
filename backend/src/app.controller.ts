@@ -8,4 +8,12 @@ export class AppController {
       endpoint: '/api/videos',
     };
   }
+
+  @Get('api')
+  getApiRoot() {
+    return {
+      message: 'API activa',
+      endpoints: ['/api/videos'],
+    };
+  }
 }

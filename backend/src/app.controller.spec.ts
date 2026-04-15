@@ -20,4 +20,13 @@ describe('AppController', () => {
       });
     });
   });
+
+  describe('getApiRoot', () => {
+    it('should expose the available api endpoints', () => {
+      expect(appController.getApiRoot()).toEqual({
+        message: 'API activa',
+        endpoints: ['/api/videos'],
+      });
+    });
+  });
 });

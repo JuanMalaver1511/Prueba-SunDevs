@@ -3,10 +3,8 @@
     'IBM Plex Sans', 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #132238;
-  background:
-    radial-gradient(circle at top, rgba(255, 206, 125, 0.32), transparent 24%),
-    linear-gradient(180deg, #fffdf8 0%, #eef5ff 52%, #f7fbf8 100%);
+  color: #101828;
+  background: #f3f4f6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -25,6 +23,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background: #f3f4f6;
 }
 
 button,
