@@ -34,4 +34,13 @@ describe('AppController', () => {
       expect(appController.getVideos()).toBe(serviceResult);
     });
   });
+
+  describe('getRoot', () => {
+    it('should expose the api entrypoint', () => {
+      expect(appController.getRoot()).toEqual({
+        message: 'Backend activo',
+        endpoint: '/api/videos',
+      });
+    });
+  });
 });
