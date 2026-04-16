@@ -1,6 +1,6 @@
 # La Cartelera de Hype Tecnologico
+## Juan Manuel Malaver
 
-Proyecto full stack con `NestJS` en el backend y `React + Vite` en el frontend. El backend lee un mock de YouTube, limpia la respuesta, calcula el nivel de hype y expone `GET /api/videos`. El frontend consume esa API y destaca el video con mayor hype como la "Joya de la Corona".
 
 ## Requisitos
 
@@ -106,8 +106,3 @@ Devuelve un arreglo de videos ya transformados. Cada item incluye:
 - `publishedRelative`
 - `hypeLevel`
 
-## Notas
-
-- El backend no usa librerias externas para formatear fechas relativas.
-- Si un video no tiene `commentCount`, su `hypeLevel` es `0`.
-- Si el titulo contiene `Tutorial` en cualquier combinacion de mayusculas/minusculas, el hype se multiplica por `2`.
