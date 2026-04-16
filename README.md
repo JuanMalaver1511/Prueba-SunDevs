@@ -1,4 +1,4 @@
-# La Cartelera de Hype Tecnologico
+# La Cartelera de Hype Tecnológico
 ## Juan Manuel Malaver
 
 
