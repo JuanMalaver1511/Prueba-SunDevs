@@ -11,7 +11,7 @@ type RelativeTimeUnit = {
 };
 
 const RELATIVE_TIME_UNITS: RelativeTimeUnit[] = [
-  { singular: 'ano', plural: 'anos', threshold: YEAR_IN_MS },
+  { singular: 'año', plural: 'años', threshold: YEAR_IN_MS },
   { singular: 'mes', plural: 'meses', threshold: MONTH_IN_MS },
   { singular: 'dia', plural: 'dias', threshold: DAY_IN_MS },
   { singular: 'hora', plural: 'horas', threshold: HOUR_IN_MS },

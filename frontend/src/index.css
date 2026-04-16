@@ -3,8 +3,8 @@
     'IBM Plex Sans', 'Segoe UI', sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color: #101828;
-  background: #f3f4f6;
+  color: #24344d;
+  background: #d8e2ee;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,7 +23,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f3f4f6;
+  background: #d8e2ee;
 }
 
 button,
@@ -35,4 +35,8 @@ select {
 
 img {
   max-width: 100%;
+}
+
+#root {
+  isolation: isolate;
 }

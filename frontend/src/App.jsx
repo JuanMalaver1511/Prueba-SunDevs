@@ -62,7 +62,7 @@ function App() {
   return (
     <main className="page-shell">
       <section className="hero-panel">
-        <h1>La Cartelera de Hype Tecnologico</h1>
+        <h1>La Cartelera de Hype Tecnológico</h1>
       </section>
 
       {loading ? <section className="status-card">Cargando videos...</section> : null}
@@ -84,24 +84,26 @@ function App() {
                 <span>{crownVideo.author}</span>
                 <span>{crownVideo.publishedRelative}</span>
               </p>
-              <p className="crown-description">
-                El video con el mayor nivel de hype del feed. Se destaca por su
-                combinacion de interaccion y rendimiento relativo.
-              </p>
-              <div className="metric-pill">
-                Hype {formatHype(crownVideo.hypeLevel)}
+              <div className="crown-metrics">
+                <div className="metric-pill">
+                  <span>Hype</span>
+                  <strong>{formatHype(crownVideo.hypeLevel)}</strong>
+                </div>
               </div>
             </div>
-            <img
-              className="crown-image"
-              src={crownVideo.thumbnail}
-              alt={`Miniatura de ${crownVideo.title}`}
-            />
+            <div className="crown-visual">
+              <img
+                className="crown-image"
+                src={crownVideo.thumbnail}
+                alt={`Miniatura de ${crownVideo.title}`}
+              />
+            </div>
           </section>
 
           <section className="video-grid">
-            {gridVideos.map((video) => (
+            {gridVideos.map((video, index) => (
               <article className="video-card" key={video.id}>
+                <div className="video-index">{String(index + 2).padStart(2, '0')}</div>
                 <img
                   className="video-thumb"
                   src={video.thumbnail}
