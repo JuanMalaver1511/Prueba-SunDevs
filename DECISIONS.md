@@ -1,140 +1,104 @@
 # Decisions
 
-## Enfoque General De La Solucion
+## Enfoque general de la solución
 
-La solucion se planteo en dos capas bien separadas:
+Desde el inicio quise mantener las responsabilidades bien separadas para evitar mezclar lógica innecesaria. Por eso dividí la solución en dos partes claras: backend y frontend.
 
-- un backend responsable de leer, limpiar y transformar los datos
-- un frontend responsable de presentar esos datos de forma clara
+El backend se encarga de tomar el JSON original, limpiarlo y transformarlo en algo más usable. La idea fue no exponer directamente el payload crudo, sino entregar una estructura más simple y consistente.
 
-La idea fue evitar que el frontend dependiera del payload crudo del proveedor externo. En lugar de eso, el backend actua como una capa de adaptacion y entrega un contrato propio, mas pequeño y estable.
+El frontend, por su lado, solo consume esa información ya procesada y se enfoca en mostrarla de forma clara.
 
-## Decisiones Tecnicas Principales
+---
 
-### Backend con NestJS
+## Decisiones técnicas principales
 
-Se uso `NestJS` porque facilita una estructura modular y clara, especialmente para separar controller, service, repository y mapper.
+### Uso de DTOs e interfaces
 
-### DTOs e interfaces
+Utilicé DTOs para definir lo que expone la API e interfaces para tipar el JSON original. Esto ayudó a tener más control sobre los datos y evitar errores.
 
-Se agregaron:
+### Mapper para la transformación
 
-- DTOs para definir la salida del backend
-- interfaces para describir el payload crudo de entrada
+La lógica de transformación (incluyendo el cálculo del hype) la moví a un mapper. Al inicio estaba en el service, pero se empezó a volver difícil de mantener.
 
-Esto hace que la transformacion de datos sea mas legible y menos propensa a errores.
+### Manejo de fechas sin librerías externas
 
-### Mapper separado
+El reto pedía no usar librerías como moment o date-fns, así que resolví el tiempo relativo con JavaScript nativo. Es una aproximación simple, pero suficiente para este caso.
 
-La logica de transformacion y calculo de hype se concentró en un mapper. Eso evita meter reglas de negocio en el controller o en el repository.
 
-### Utilidad de fecha con JavaScript nativo
+### Proxy en desarrollo
 
-La fecha relativa se implementó sin `moment`, `date-fns` ni librerias similares, porque el reto lo pedía explícitamente.
+Configuré un proxy en Vite para evitar problemas de CORS y no tener que hardcodear la URL del backend.
 
-### Frontend con React + Vite
+---
 
-Se usó `React` por simplicidad y `Vite` para un entorno de desarrollo rápido. El frontend consume `/api/videos` y resuelve tres estados básicos: carga, error y éxito.
+## Organización del proyecto
 
-### Proxy de Vite
+En el backend trabajé por módulo (`videos`), separando:
 
-Se configuró proxy en desarrollo para que el frontend pueda llamar `/api/videos` sin hardcodear `http://localhost:3000`.
+- controller
+- service
+- repository
+- mapper
+- dto
+- interfaces
 
-## Organizacion Del Proyecto
+Esto surgió después de una primera versión más desordenada donde todo estaba muy junto.
 
-La organizacion del backend quedó orientada por feature:
+En el frontend mantuve una estructura simple porque el alcance no requería algo más complejo. Básicamente una vista principal con sus estilos.
 
-- `videos/`
-- `common/`
+---
 
-Dentro de `videos/` se separó:
+## Supuestos y simplificaciones
 
-- `videos.controller.ts`
-- `videos.service.ts`
-- `videos.repository.ts`
-- `videos.mapper.ts`
-- `dto/`
-- `interfaces/`
+- El archivo JSON se toma como única fuente de datos.
+- No se usaron variables de entorno.
+- No se implementaron filtros ni paginación.
+- El frontend tiene una sola vista.
+- El cálculo de tiempo es aproximado (30 días por mes, 365 por año).
+- Si un video tiene 0 views, el hype se deja en 0.
 
-Esto se eligió para mantener cada responsabilidad localizada y permitir crecimiento futuro sin convertir `src/` en una carpeta plana con archivos mezclados.
+---
 
-En frontend se mantuvo una estructura liviana porque el alcance actual es pequeño. La mayor parte de la complejidad está en la vista principal y sus estilos.
+## Problemas encontrados y cómo los resolví
 
-## Supuestos O Simplificaciones Realizadas
+### Rutas devolviendo 404
 
-- El archivo `backend/mock-youtube-api.json` se toma como fuente oficial de datos.
-- No se agregaron variables de entorno porque el proyecto aún no lo necesita.
-- No se implementó paginación ni filtros porque no eran parte del alcance.
-- El frontend usa una sola pantalla principal.
-- El cálculo de tiempo relativo usa aproximaciones simples:
-  `30` días por mes y `365` días por año.
-- Cuando un video tiene `viewCount` igual a `0`, el hype se fuerza a `0`.
+Inicialmente solo existía `/api/videos`, lo que hacía parecer que la API no funcionaba al probar otras rutas. Se agregaron rutas básicas (`/` y `/api`) para mejorar la experiencia.
 
-## Problemas Encontrados Y Como Los Resolvi
+### Error con las URL de las miniaturas
 
-### 1. `GET /` devolvía 404
+El JSON incluía URLs de miniaturas usando `via.placeholder.com`. Al probarlas, noté que no estaban funcionando correctamente (posiblemente por bloqueos o porque ya no están disponibles).
 
-Inicialmente el backend solo exponía `GET /api/videos`. Se agregó `GET /` para responder con un mensaje simple de salud del servicio.
+Para solucionarlo, decidí reemplazarlas por `placehold.co`, que ofrece el mismo tipo de servicio y funciona sin problemas.
 
-### 2. `GET /api` devolvía 404
+### Error de TypeScript
 
-Se agregó una ruta `GET /api` como índice básico de endpoints disponibles, para evitar que parezca que la API está rota al abrir esa ruta manualmente.
+Había un problema con la configuración de `ignoreDeprecations`. Se corrigió a una versión compatible y con eso volvieron a funcionar los comandos.
 
-### 3. Error de TypeScript con `ignoreDeprecations`
+### Código muy concentrado
 
-La configuración tenía:
+Al inicio tenía demasiada lógica dentro del service. Se refactorizó separando responsabilidades en mapper y repository.
 
-```json
-"ignoreDeprecations": "6.0"
-```
+### Diseño del frontend
 
-Ese valor no era válido para la versión instalada de TypeScript. Se corrigió a:
+La primera versión era más visual, pero poco práctica. Se simplificó para lograr una interfaz más limpia y clara.
 
-```json
-"ignoreDeprecations": "5.0"
-```
+---
 
-Con eso volvieron a pasar `npm test` y `npm run build` en el backend.
+## Prompts más relevantes utilizados
 
-### 4. Estructura inicial demasiado plana
+Algunos prompts que utilice:
 
-La primera versión del backend tenía demasiada responsabilidad concentrada en un solo service. Se refactorizó a una estructura más limpia con módulo de videos, repository, mapper, DTO e interfaces.
+- "por qué no cargan imágenes de via.placeholder.com y qué alternativas puedo usar"
+- "error ignoreDeprecations typescript cómo solucionarlo según versión"
+- "cómo refactorizar un service muy grande en NestJS separando responsabilidades"
 
-### 5. Estilo inicial del frontend demasiado visual
+Las respuestas me sirvieron como guía o punto de partida, pero en todos los casos hice ajustes manuales para adaptarlo a lo que necesitaba el proyecto. La estructura y decisiones finales se tomaron durante el desarrollo.
 
-La primera propuesta visual tenía fondos más decorativos. Luego se ajustó a una línea más profesional con colores sólidos, menos efectos y una jerarquía visual más sobria.
+## Estado final
 
-## Prompts Mas Relevantes Utilizados
+El backend expone `/api/videos` con datos ya procesados y listos para consumir.
 
-Se utilizó asistencia de IA durante el desarrollo. Los prompts más relevantes del flujo fueron:
+El frontend consume ese endpoint, maneja estados básicos (carga, error) y muestra los videos resaltando el más relevante.
 
-1. "quiero que mejores el codigo que sea mas organizado puede ser por DTOS que se vea mas top y organizado por carpetas y mejor estructurado clean code"
-
-Ese prompt impulsó la refactorización del backend hacia una estructura modular por feature.
-
-2. "Genial, ahora quiero que mejores el front que se vea mas profesional, con colores mas solidos sin usar degrade etc"
-
-Ese prompt llevó al rediseño visual del frontend hacia una interfaz más sobria.
-
-3. "ahora quiero esto README.md ... DECISIONS.md ..."
-
-Ese prompt definió la necesidad de dejar documentación clara de uso y de decisiones técnicas.
-
-## Estado Final
-
-El backend:
-
-- expone `GET /api/videos`
-- limpia el payload mock
-- calcula hype
-- transforma fechas
-- devuelve un contrato estable
-
-El frontend:
-
-- consume la API
-- maneja carga y error
-- muestra una grilla
-- destaca el video con más hype
-
-La solución quedó funcional, organizada y preparada para crecer sin rehacer la base.
+En general, la solución quedó funcional, organizada y fácil de extender.
